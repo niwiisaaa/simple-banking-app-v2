@@ -15,6 +15,16 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, index=True)
     firstname = db.Column(db.String(64), nullable=True)
     lastname = db.Column(db.String(64), nullable=True)
+
+    password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(20), default='user')  # NEW
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
     # Detailed address fields
     address_line = db.Column(db.String(256), nullable=True)  # Street address, building, etc.
     region_code = db.Column(db.String(20), nullable=True)
