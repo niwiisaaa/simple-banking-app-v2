@@ -1,7 +1,7 @@
 # PS_GROUP6_Final-Project
 
 ### CSEC 322 - Platform Security 
-### Securing an Existing Banking Application - Security Assessment and Improvement of a Web-Based Banking Application**
+### Securing an Existing Banking Application - Security Assessment and Improvement of a Web-Based Banking Application
 **Date:** May 24, 2025
 
 ## 👥 Group Members
