@@ -1,53 +1,105 @@
-# Simple Banking App
+# PS_GROUP6_Final-Project
 
-A user-friendly and responsive Flask-based banking application designed for deployment on PythonAnywhere. This application allows users to create accounts, perform simulated money transfers between accounts, view transaction history, and securely manage their credentials.
+### CSEC 322 - Platform Security 
+### Securing an Existing Banking Application - Security Assessment and Improvement of a Web-Based Banking Application**
+**Date:** May 24, 2025
 
-## Features
+## 👥 Group Members
 
-- **User Authentication**
-  - Secure login with username/password
-  - Registration of new users
-  - Password recovery mechanism (email-based)
+- De Silva, Mark Bryan 
+- Parañal, Mary Rachel
+- Valle, Nerisa
 
-- **Account Management**
-  - Display of account balance
-  - View recent transaction history (last 10 transactions)
+---
 
-- **Fund Transfer**
-  - Transfer money to other registered users
-  - Confirmation screen before completing transfers
-  - Transaction history updated after transfers
+## 📖 Introduction
 
-- **User Role Management**
-  - Regular user accounts
-  - Admin users with account approval capabilities
-  - Manager users who can manage admin accounts
+In today’s increasingly digital financial landscape, web-based banking applications are prime targets for cyber threats. This project undertakes a comprehensive security assessment and enhancement of the **Simple Banking App**, a user-friendly and responsive Flask-based banking application designed for deployment on PythonAnywhere. This application allows users to create accounts, perform simulated money transfers between accounts, view transaction history, and securely manage their credentials.
 
-- **Location Data Integration**
-  - Philippine Standard Geographic Code (PSGC) API integration
-  - Hierarchical location data selection (Region, Province, City, Barangay)
-  - Form fields pre-populated with location data
+By identifying key vulnerabilities, implementing secure coding practices, and reinforcing critical components like authentication, data handling, and access control, our team aimed to elevate the app’s resilience against real-world attack vectors.
 
-- **Admin Features**
-  - User account approval workflow
-  - Account activation/deactivation
-  - Deposit funds to user accounts
-  - Create new accounts
-  - Edit user information
+---
 
-- **Manager Features**
-  - Create and manage admin accounts
-  - View admin transaction logs
-  - Monitor all system transfers
+## 🎯 Objectives
 
-- **Security**
-  - Password hashing with bcrypt for secure storage
-  - Secure session management
-  - Token-based password reset
-  - API rate limiting to prevent abuse
-  - CSRF protection for all forms
+- To identify and assess vulnerabilities within the original Simple Banking App.
+- To improve authentication, session management, input validation, and error handling mechanisms.
+- To conduct penetration testing and validate improvements using industry-standard tools.
+- To document the assessment and improvement process following best practices.
 
-## Getting Started
+---
+
+## 🏛️ Original Application Features
+
+The existing Simple Banking App already implements the following features:
+
+1. **User Authentication**  
+   a. Login with username and password  
+   b. Registration of new users  
+   c. Password recovery mechanism  
+
+2. **Account Management**  
+   a. Display of account balance  
+   b. View of transaction history  
+
+3. **Fund Transfer**  
+   a. Transfer money to other registered users  
+   b. Confirmation screen before completing transfers  
+   c. Transaction history updated after transfers  
+
+4. **User Role Management**  
+   a. Regular user accounts  
+   b. Admin users with account approval capabilities  
+   c. Manager users who can manage admin accounts  
+
+5. **Location Data Integration**  
+   a. Philippine Standard Geographic Code (PSGC) API integration  
+   b. Hierarchical location data selection 
+
+---
+
+----- the following sections are to be edited -----
+
+## 🕵️ Security Assessment Findings
+
+
+--- 
+
+## 🔐 Security Improvements Implemented
+
+
+---
+
+## 🛡️ Penetration Testing Report
+
+### Summary of Exploited Vulnerabilities
+
+
+
+### Recommendations
+
+
+
+## 🛠️ Remediation Plan
+
+
+---
+
+## 🧰 Technology Stack
+
+Updated list of technologies used:
+
+- **Backend**: Python, Flask
+- **Database**: MySQL (with SQLAlchemy ORM)
+- **Frontend**: HTML, CSS, Bootstrap 5
+- **Authentication**: Flask-Login, Werkzeug, Flask-Bcrypt
+- **Forms**: Flask-WTF, WTForms
+- **Security**: Flask-Limiter for API rate limiting, CSRF protection
+- **External API**: PSGC API for Philippine geographic data
+
+---
+
+## ⚙️ Setup Instructions
 
 ### Prerequisites
 - Python 3.7+
@@ -127,7 +179,7 @@ A user-friendly and responsive Flask-based banking application designed for depl
 
 4. Access the application at `http://localhost:5000`
 
-## Deploying to PythonAnywhere
+### Deploying to PythonAnywhere
 
 1. Create a PythonAnywhere account at [www.pythonanywhere.com](https://www.pythonanywhere.com)
 
@@ -234,16 +286,6 @@ The application integrates with the Philippine Standard Geographic Code (PSGC) A
 
 This integration ensures addresses are standardized and validates location data according to the Philippine geographical structure.
 
-## Technologies Used
-
-- **Backend**: Python, Flask
-- **Database**: MySQL (with SQLAlchemy ORM)
-- **Frontend**: HTML, CSS, Bootstrap 5
-- **Authentication**: Flask-Login, Werkzeug, Flask-Bcrypt
-- **Forms**: Flask-WTF, WTForms
-- **Security**: Flask-Limiter for API rate limiting, CSRF protection
-- **External API**: PSGC API for Philippine geographic data
-
 ## Rate Limiting
 
 The application uses Flask-Limiter to implement API rate limiting, which protects against potential DoS attacks and abusive bot activity. The rate limits are configured as follows:
@@ -269,6 +311,6 @@ By default, the rate limiting data is stored in memory. For production use, it's
 
 If Redis is not available, the application will automatically fall back to in-memory storage.
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
