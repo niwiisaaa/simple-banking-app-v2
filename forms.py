@@ -21,7 +21,7 @@ def password_strength(form, field):
     if errors:
         raise ValidationError("Password must contain " + ", ".join(errors) + ".")
 
-#Login Form
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -29,7 +29,7 @@ class LoginForm(FlaskForm):
 
     def validate(self, extra_validators=None):
         return super(LoginForm, self).validate()
-#Registration Form
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
