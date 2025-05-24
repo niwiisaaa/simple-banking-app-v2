@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Nu
 from models import User
 import re
 
+#Password Strength
 def password_strength(form, field):
     password = field.data or ""
     errors = []
