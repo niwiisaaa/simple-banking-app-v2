@@ -12,6 +12,12 @@
 
 ---
 
+## 🔗 Presentation Link 
+
+- https://drive.google.com/drive/folders/1Nnp6GYebYcruugdzz-mV4gJjWa-51IQn?usp=sharing 
+
+--- 
+
 ## 📖 Introduction
 
 In today’s increasingly digital financial landscape, web-based banking applications are prime targets for cyber threats. This project undertakes a comprehensive security assessment and enhancement of the **Simple Banking App**, a user-friendly and responsive Flask-based banking application designed for deployment on PythonAnywhere. This application allows users to create accounts, perform simulated money transfers between accounts, view transaction history, and securely manage their credentials.
@@ -34,39 +40,80 @@ By identifying key vulnerabilities, implementing secure coding practices, and re
 The existing Simple Banking App already implements the following features:
 
 1. **User Authentication**  
-   a. Login with username and password  
-   b. Registration of new users  
-   c. Password recovery mechanism  
+   - Login with username and password  
+   - Registration of new users  
+   - Password recovery mechanism  
 
 2. **Account Management**  
-   a. Display of account balance  
-   b. View of transaction history  
+   - Display of account balance  
+   - View of transaction history  
 
 3. **Fund Transfer**  
-   a. Transfer money to other registered users  
-   b. Confirmation screen before completing transfers  
-   c. Transaction history updated after transfers  
+   - Transfer money to other registered users  
+   - Confirmation screen before completing transfers  
+   - Transaction history updated after transfers  
 
 4. **User Role Management**  
-   a. Regular user accounts  
-   b. Admin users with account approval capabilities  
-   c. Manager users who can manage admin accounts  
+   - Regular user accounts  
+   - Admin users with account approval capabilities  
+   - Manager users who can manage admin accounts  
 
 5. **Location Data Integration**  
-   a. Philippine Standard Geographic Code (PSGC) API integration  
-   b. Hierarchical location data selection 
+   - Philippine Standard Geographic Code (PSGC) API integration  
+   - Hierarchical location data selection 
 
 ---
 
------ the following sections are to be edited -----
-
 ## 🕵️ Security Assessment Findings
 
+The following vulnerabilities were discovered during the initial security audit:
+
+- **Weak Password Policy:** No enforcement of complexity rules.
+- **Plaintext Password Storage:** Passwords were hashed with insecure methods.
+- **Session Fixation Vulnerabilities:** Sessions were not regenerated after login.
+- **Insufficient Input Validation:** Several fields were susceptible to XSS and SQL injection.
+- **CSRF Vulnerabilities:** Forms lacked CSRF protection.
+- **Overly Permissive Role Management:** Privilege escalation was possible via direct URL access.
+- **Error Disclosure:** Raw error messages exposed sensitive system information.
+- **Lack of Rate Limiting:** Brute-force attacks could be executed without restriction.
+- **Insecure Dependencies:** Outdated Flask and SQLAlchemy versions were used.
 
 --- 
 
 ## 🔐 Security Improvements Implemented
 
+The following security enhancements were applied to harden the application:
+
+1. **Authentication and Password Security**
+   - Enforced strong password policy using regex validation (uppercase, lowercase, digit, special character, min 8 chars)
+   - Removed fallback to SHA-256, enforced `bcrypt` for all password storage
+   - Added real-time password strength meter to registration and account creation forms
+
+2. **Session Management**
+   - Enabled secure, HTTPOnly, and SameSite cookie flags
+   - Sessions are regenerated on login/logout to prevent fixation attacks
+
+3. **Input Validation**
+   - Sanitized and validated all user input fields
+   - Stricter validators added on all forms (length, format, content)
+
+4. **CSRF Protection**
+   - Ensured CSRF tokens are used on all forms via `Flask-WTF`
+   - Globally enabled CSRF protection for the app
+
+5. **Authorization & Role Management**
+   - Enforced strict role checks for all Admin/Manager actions
+   - Prevented privilege escalation by validating user roles before sensitive actions
+
+6. **Error Handling**
+   - Added custom error handlers for 404, 500, and unhandled exceptions
+   - Prevented leakage of system/internal information to the user
+  
+7. **Rate Limiting**
+   - Used `Flask-Limiter` to prevent brute-force attacks and abuse on sensitive routes
+
+8. **Dependencies**
+   - Updated all outdated libraries and removed insecure fallbacks
 
 ---
 
@@ -74,14 +121,60 @@ The existing Simple Banking App already implements the following features:
 
 ### Summary of Exploited Vulnerabilities
 
+Penetration testing was conducted using industry-standard tools:
 
+- **OWASP ZAP** and **Burp Suite** uncovered:
+   - Reflected XSS in profile update form.
+   - SQL injection on the transfer amount input.
+   - Missing or weak CSP and HSTS headers.
+- **Nmap** scan indicated open development ports.
+- **Nikto** identified server misconfiguration and missing security headers.
 
 ### Recommendations
 
+- Sanitize and validate all user inputs both client- and server-side.
+- Use parameterized queries to prevent SQL injection.
+- Implement strict Content Security Policy (CSP).
+- Force HTTPS and enable HTTP Strict Transport Security (HSTS).
+- Regenerate sessions upon login and logout.
+- Rate-limit sensitive endpoints like login and registration.
+- Enforce role-based access checks in backend routes.
 
+---
 
 ## 🛠️ Remediation Plan
 
+To address the vulnerabilities found, the following steps were taken:
+
+1. **Authentication**
+   - Implemented password strength checks using regex.
+   - Migrated from SHA-256 to bcrypt for hashing.
+
+2. **Session Management**
+   - Set session cookies to Secure, HttpOnly, and SameSite=Strict.
+   - Regenerated session IDs on login/logout.
+
+3. **Input Validation**
+   - Applied input sanitization across all forms.
+   - Used WTForms validators for strict length and type checks.
+
+4. **CSRF Protection**
+   - Added CSRF tokens to all forms using Flask-WTF.
+   
+5. **Authorization Controls**
+   - Ensured access control decorators for all sensitive views.
+
+6. **Error Handling**
+   - Replaced debug error messages with user-friendly custom error pages.
+
+7. **Rate Limiting**
+   - Introduced Flask-Limiter with tiered request caps per route.
+
+8. **Dependency Management**
+   - Updated all Python packages to the latest stable versions.
+
+9. **Secure Deployment**
+   - Configured HTTPS via PythonAnywhere and enforced SSL redirects.
 
 ---
 
