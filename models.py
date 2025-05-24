@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    # Detailed address fields
+    # Address fields compatible with PH Geo API
     address_line = db.Column(db.String(256), nullable=True)  # Street address, building, etc.
     region_code = db.Column(db.String(20), nullable=True)
     region_name = db.Column(db.String(100), nullable=True)
