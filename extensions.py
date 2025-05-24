@@ -12,7 +12,7 @@ load_dotenv()
 # Initialize SQLAlchemy
 db = SQLAlchemy()
 
-
+# Initialize Login Manager
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 
