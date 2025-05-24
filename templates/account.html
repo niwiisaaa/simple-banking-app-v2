@@ -12,7 +12,7 @@
                     <div class="col-md-6">
                         <h5 class="card-title">Current Balance</h5>
                         <h2 class="display-4">₱{{ "%.2f"|format(current_user.balance) }}</h2>
-                        <p class="mt-2">Account Number: <strong>{{ current_user.account_number }}</strong></p>
+                        <p class="mt-2">Account Number: <strong>{{ current_user.account_number|e }}</strong></p>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="{{ url_for('transfer') }}" class="btn btn-light mt-3">Make a Transfer</a>
@@ -34,7 +34,7 @@
                             <div class="transaction-item">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <strong>Admin Deposit to:</strong> {{ transaction.receiver.username }} ({{ transaction.receiver.account_number }})
+                                        <strong>Admin Deposit to:</strong> {{ transaction.receiver.username|e }} ({{ transaction.receiver.account_number|e }})
                                         <div class="text-secondary small">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
                                         <span class="badge bg-info">Over-the-counter deposit (Admin action)</span>
                                     </div>
@@ -47,7 +47,7 @@
                             <div class="transaction-item sent">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <strong>Sent to:</strong> {{ transaction.receiver.username }} ({{ transaction.receiver.account_number }})
+                                        <strong>Sent to:</strong> {{ transaction.receiver.username|e }} ({{ transaction.receiver.account_number|e }})
                                         <div class="text-secondary small">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
                                     </div>
                                     <div class="text-danger fw-bold">
@@ -61,11 +61,11 @@
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         {% if transaction.transaction_type == 'deposit' %}
-                                            <strong>Deposit by:</strong> {{ transaction.sender.username }}
+                                            <strong>Deposit by:</strong> {{ transaction.sender.username|e }}
                                             <div class="text-secondary small">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
                                             <span class="badge bg-info">Over-the-counter deposit</span>
                                         {% else %}
-                                            <strong>Received from:</strong> {{ transaction.sender.username }} ({{ transaction.sender.account_number }})
+                                            <strong>Received from:</strong> {{ transaction.sender.username|e }} ({{ transaction.sender.account_number|e }})
                                             <div class="text-secondary small">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
                                         {% endif %}
                                     </div>
@@ -85,4 +85,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
