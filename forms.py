@@ -2,7 +2,24 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, RadioField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange, Optional
 from models import User
+import re
 
+def password_strength(form, field):
+    password = field.data or ""
+    errors = []
+    if len(password) < 8:
+        errors.append("at least 8 characters")
+    if not re.search(r'[A-Z]', password):
+        errors.append("an uppercase letter")
+    if not re.search(r'[a-z]', password):
+        errors.append("a lowercase letter")
+    if not re.search(r'[0-9]', password):
+        errors.append("a digit")
+    if not re.search(r'[\W_]', password):
+        errors.append("a special character")
+    if errors:
+        raise ValidationError("Password must contain " + ", ".join(errors) + ".")
+        
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
