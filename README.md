@@ -307,49 +307,49 @@ Updated list of technologies used:
 
 7. Add environment variables in the PythonAnywhere dashboard for security
 
-## Usage
+### Usage
 
-### Registration
+#### Registration
 - Navigate to the registration page
 - Enter username, email, and password
 - Confirm your password
 - Submit the form to create your account (pending admin approval)
 
-### Login
+#### Login
 - Enter your username and password
 - Click "Sign In"
 
-### Account Overview
+#### Account Overview
 - View your current balance
 - See your recent transaction history
 
-### Transfer Funds
+#### Transfer Funds
 - Navigate to the Transfer page
 - Enter recipient's username or account number
 - Enter the amount to transfer
 - Confirm the transfer details on the confirmation screen
 - Complete the transfer
 
-### Password Reset
+#### Password Reset
 - Click "Forgot your password?" on the login page
 - Enter your registered email address
 - Follow the link in the email (simulated in this demo)
 - Create a new password
 
-### Admin Features
+#### Admin Features
 - Approve new user registrations
 - Activate/deactivate user accounts
 - Create new user accounts
 - Make over-the-counter deposits to user accounts
 - Edit user details including location information
 
-### Manager Features
+#### Manager Features
 - Create new admin accounts
 - Toggle admin status for users
 - View all user transactions
 - Monitor and audit admin activities
 
-## User Roles
+### User Roles
 
 The system supports three types of user roles:
 
@@ -368,7 +368,7 @@ The system supports three types of user roles:
    - Monitor all system transfers
    - System-wide oversight capabilities
 
-## Address Management with PSGC API
+### Address Management with PSGC API
 
 The application integrates with the Philippine Standard Geographic Code (PSGC) API to provide standardized address selection for user profiles. The address system follows the Philippine geographical hierarchy:
 
@@ -379,7 +379,7 @@ The application integrates with the Philippine Standard Geographic Code (PSGC) A
 
 This integration ensures addresses are standardized and validates location data according to the Philippine geographical structure.
 
-## Rate Limiting
+### Rate Limiting
 
 The application uses Flask-Limiter to implement API rate limiting, which protects against potential DoS attacks and abusive bot activity. The rate limits are configured as follows:
 
@@ -403,6 +403,8 @@ By default, the rate limiting data is stored in memory. For production use, it's
    ```
 
 If Redis is not available, the application will automatically fall back to in-memory storage.
+
+--- 
 
 ## 📝 License
 
