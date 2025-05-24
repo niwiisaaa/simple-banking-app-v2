@@ -6,8 +6,11 @@ import random
 import string
 
 def generate_account_number():
-    """Generate a random 10-digit account number"""
-    return ''.join(random.choices(string.digits, k=10))
+    """Generate a random 10-digit account number (unique)"""
+    while True:
+        number = ''.join(random.choices(string.digits, k=10))
+        if not User.query.filter_by(account_number=number).first():
+            return number
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
