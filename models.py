@@ -22,12 +22,6 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     role = db.Column(db.String(20), default='user')  # NEW
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
     # Address fields compatible with PH Geo API
     address_line = db.Column(db.String(256), nullable=True)  # Street address, building, etc.
     region_code = db.Column(db.String(20), nullable=True)
@@ -40,36 +34,34 @@ class User(UserMixin, db.Model):
     barangay_name = db.Column(db.String(100), nullable=True)
     postal_code = db.Column(db.String(10), nullable=True)
     phone = db.Column(db.String(20), nullable=True)
-    password_hash = db.Column(db.String(128))
+   
     account_number = db.Column(db.String(10), unique=True, default=generate_account_number)
     balance = db.Column(db.Float, default=1000.0)  # Match schema.sql default of 1000.0
     status = db.Column(db.String(20), default='pending')  # 'active', 'deactivated', or 'pending'
     is_admin = db.Column(db.Boolean, default=False)  # Admin status
     is_manager = db.Column(db.Boolean, default=False)  # Manager status (can manage admins)
     date_registered = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
     transactions_sent = db.relationship('Transaction', foreign_keys='Transaction.sender_id', backref='sender', lazy='dynamic')
     transactions_received = db.relationship('Transaction', foreign_keys='Transaction.receiver_id', backref='receiver', lazy='dynamic')
     
     @property
     def full_address(self):
-        """Return the full formatted address"""
-        address_parts = []
+        def full_address(self):
+        parts = []
         if self.address_line:
-            address_parts.append(self.address_line)
+            parts.append(self.address_line)
         if self.barangay_name:
-            address_parts.append(f"Barangay {self.barangay_name}")
+            parts.append(f"Barangay {self.barangay_name}")
         if self.city_name:
-            address_parts.append(self.city_name)
+            parts.append(self.city_name)
         if self.province_name:
-            address_parts.append(self.province_name)
+            parts.append(self.province_name)
         if self.region_name:
-            address_parts.append(self.region_name)
+            parts.append(self.region_name)
         if self.postal_code:
-            address_parts.append(self.postal_code)
-        
-        if address_parts:
-            return ", ".join(address_parts)
-        return "No address provided"
+            parts.append(self.postal_code)
+        return ", ".join(parts) if parts else "No address provided"
     
     def __repr__(self):
         return f'<User {self.username}>'
