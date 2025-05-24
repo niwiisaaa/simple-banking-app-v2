@@ -6,7 +6,7 @@ from flask_limiter.util import get_remote_address
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
+
 load_dotenv()
 
 # Initialize SQLAlchemy
