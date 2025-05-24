@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from app import app, csrf
@@ -21,7 +21,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_admin:
-            flash('You need to be an admin to access this page.')
+            flash('You do not have permission to access this page.')
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -31,7 +31,7 @@ def manager_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_manager:
-            flash('You need to be a manager to access this page.')
+            flash('You do not have permission to access this page.')
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -67,34 +67,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        
-        # Check if this is an old SHA-256 password hash (exactly 64 characters)
-        # SHA-256 hashes are 64 characters long, bcrypt hashes start with $2b$
-        if user and user.password_hash and len(user.password_hash) == 64 and not user.password_hash.startswith('$2b$'):
-            import hashlib
-            # Verify with old method
-            sha2_hash = hashlib.sha256(form.password.data.encode()).hexdigest()
-            if sha2_hash == user.password_hash:
-                # Upgrade to bcrypt
-                user.set_password(form.password.data)
-                db.session.commit()
-                # Continue with login
-            else:
-                flash('Invalid username or password')
-                return redirect(url_for('login'))
-        elif user is None or not user.check_password(form.password.data):
+        if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        
-        # Check if user account is active (unless they're an admin or manager)
-        if user.status != 'active' and not user.is_admin and not user.is_manager:
-            if user.status == 'pending':
-                flash('Your account is awaiting approval from an administrator.')
-            else:  # deactivated
-                flash('Your account has been deactivated. Please contact an administrator.')
-            return redirect(url_for('login'))
-            
+        # Session Management: Regenerate session on login
+        session.clear()
         login_user(user)
+        session.regenerate() if hasattr(session, 'regenerate') else None  # Flask 2.3+
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -103,7 +82,10 @@ def login():
 
 @app.route('/logout')
 def logout():
+    # Session Management: Regenerate session on logout
     logout_user()
+    session.clear()
+    session.regenerate() if hasattr(session, 'regenerate') else None
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -313,7 +295,8 @@ def deactivate_user(user_id):
 def create_account():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, status='active')
+        # Prevent privilege escalation: only regular users can be created here
+        user = User(username=form.username.data, email=form.email.data, status='active', is_admin=False, is_manager=False)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -638,7 +621,8 @@ def manager_dashboard():
 def create_admin():
     form = RegistrationForm()
     if form.validate_on_submit():
-        admin = User(username=form.username.data, email=form.email.data, status='active', is_admin=True)
+        # Prevent privilege escalation: only manager can create admin, not manager
+        admin = User(username=form.username.data, email=form.email.data, status='active', is_admin=True, is_manager=False)
         admin.set_password(form.password.data)
         db.session.add(admin)
         db.session.commit()
@@ -907,4 +891,4 @@ def manager_transfers():
     return render_template('manager/transfers.html', 
                          title='Transfer Transactions', 
                          transactions=transactions,
-                         users=users) 
+                         users=users)
