@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
@@ -34,13 +34,10 @@ def create_app():
     app.config['REMEMBER_COOKIE_HTTPONLY'] = True
     app.config['REMEMBER_COOKIE_SECURE'] = True
 
-    # CSRF Protection
+    # CSRF Protection: Ensure enabled globally
     csrf.init_app(app)
 
     # Database configuration
-
-    # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
-    # Use defaults to avoid None values
     mysql_user = os.environ.get('MYSQL_USER', '')
     mysql_password = os.environ.get('MYSQL_PASSWORD', '')
     mysql_host = os.environ.get('MYSQL_HOST', '')  # Default to localhost if not set
@@ -75,6 +72,33 @@ def create_app():
         # Otherwise, return the HTML template
         return render_template('rate_limit_error.html', message=str(e)), 429
 
+    # Error Handling: Prevent information leakage
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('error.html', code=404, message="Page not found."), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        # db.session.rollback()  # Optionally rollback if using db
+        return render_template('error.html', code=500, message="An internal error occurred."), 500
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        # Log the exception if needed, but do not show details to user
+        return render_template('error.html', code=500, message="An unexpected error occurred."), 500
+
+    # Secure Communication: Redirect HTTP to HTTPS and set HSTS in production
+    @app.before_request
+    def enforce_https():
+        if not app.debug and not request.is_secure:
+            url = request.url.replace("http://", "https://", 1)
+            return redirect(url, code=301)
+
+    @app.after_request
+    def set_hsts_header(response):
+        if not app.debug:
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        return response
     return app
 
 # Create Flask app
@@ -82,6 +106,8 @@ app = create_app()
 
 # Import models - must be after db initialization
 from models import User, Transaction
+
+from flask import session
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -112,12 +138,6 @@ def init_db():
             print("Created admin user with username 'admin' and password 'admin123'")
 
 if __name__ == '__main__':
-    # Print environment variables for debugging
-    print(f"Environment variables:")
-    print(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
-    print(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
-    print(f"MYSQL_DATABASE: {os.environ.get('MYSQL_DATABASE')}")
-    
     with app.app_context():
         db.create_all()
-    app.run(debug=True) 
+    app.run(debug=True)
