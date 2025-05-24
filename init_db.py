@@ -26,6 +26,9 @@ def init_mysql_database():
     try:
         print("Attempting to connect to MySQL server...")
         print(f"Connection details: {mysql_host}:{mysql_port} as {mysql_user}")
+        # SECURITY FLAW: Printing DB credentials can leak sensitive info.
+        # Recommended: Remove or mask credentials in logs.
+
         connection = pymysql.connect(
             host=mysql_host,
             port=int(mysql_port),
@@ -42,6 +45,9 @@ def init_mysql_database():
             with connection.cursor() as cursor:
                 # Drop database if exists
                 print("Dropping database if it exists...")
+                # SECURITY FLAW: Dropping DB is destructive, only for dev/test.
+                # Recommended: Never run this in production.
+
                 cursor.execute(f"DROP DATABASE IF EXISTS {mysql_database}")
                 
                 # Create database
@@ -374,8 +380,48 @@ def init_flask_app_db():
         print(traceback.format_exc())
         return False
 
+def create_mysql_user_and_db():
+    """
+    Create the MySQL user and database if they do not exist.
+    This requires root or a MySQL user with sufficient privileges.
+    """
+    root_user = os.environ.get('MYSQL_ROOT_USER', 'root')
+    root_password = os.environ.get('MYSQL_ROOT_PASSWORD', '')
+    mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+    mysql_port = int(os.environ.get('MYSQL_PORT', 3306))
+    mysql_user = os.environ.get('MYSQL_USER')
+    mysql_password = os.environ.get('MYSQL_PASSWORD')
+    mysql_database = os.environ.get('MYSQL_DATABASE')
+
+    try:
+        print("Connecting as root to create user and database if needed...")
+        root_conn = pymysql.connect(
+            host=mysql_host,
+            port=mysql_port,
+            user=root_user,
+            password=root_password,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+            connect_timeout=10
+        )
+        with root_conn.cursor() as cursor:
+            # Create user if not exists
+            cursor.execute(f"CREATE USER IF NOT EXISTS '{mysql_user}'@'localhost' IDENTIFIED BY '{mysql_password}';")
+            # Grant privileges
+            cursor.execute(f"GRANT ALL PRIVILEGES ON {mysql_database}.* TO '{mysql_user}'@'localhost';")
+            # Create database if not exists
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {mysql_database} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+            root_conn.commit()
+        root_conn.close()
+        print(f"User '{mysql_user}' and database '{mysql_database}' ensured.")
+    except Exception as e:
+        print(f"Error creating MySQL user or database: {e}")
+        print(traceback.format_exc())
+        print("Please ensure you have set MYSQL_ROOT_USER and MYSQL_ROOT_PASSWORD in your environment if not using default root credentials.")
+
 if __name__ == "__main__":
     print("== Simple Banking App Database Initialization ==")
+    create_mysql_user_and_db()
     print("\nStep 1: Initializing MySQL database schema directly...")
     mysql_success = init_mysql_database()
     
@@ -398,4 +444,4 @@ if __name__ == "__main__":
         print("Make sure MySQL server is running and credentials are correct in .env file.")
         # Exit with error code
         import sys
-        sys.exit(1) 
+        sys.exit(1)
