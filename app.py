@@ -34,7 +34,7 @@ def create_app():
     app.config['REMEMBER_COOKIE_HTTPONLY'] = True
     app.config['REMEMBER_COOKIE_SECURE'] = True
 
-    # CSRF Protection
+    # CSRF Protection: Ensure enabled globally
     csrf.init_app(app)
 
     # Database configuration
