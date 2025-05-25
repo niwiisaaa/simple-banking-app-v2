@@ -27,4 +27,4 @@ limiter = Limiter(
     default_limits=["200 per day", "50 per hour"],
     storage_uri=storage_uri,
     strategy="fixed-window",  # can be 'fixed-window', 'fixed-window-elastic-expiry', 'moving-window'
-) 
+)
