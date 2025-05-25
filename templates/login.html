@@ -9,6 +9,7 @@
             </div>
             <div class="card-body">
                 <form method="post" novalidate>
+                    {{ form.csrf_token }}
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
                         {{ form.username.label(class="form-label") }}
@@ -36,4 +37,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
