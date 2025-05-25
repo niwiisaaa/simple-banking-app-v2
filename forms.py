@@ -25,9 +25,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
-    def validate(self, extra_validators=None):
-        return super(LoginForm, self).validate()
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -45,9 +42,6 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
-
-    def validate(self, extra_validators=None):
-        return super(RegistrationForm, self).validate()
 
 class TransferForm(FlaskForm):
     transfer_type = RadioField('Transfer Type', 
