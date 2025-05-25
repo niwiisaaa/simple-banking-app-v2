@@ -4,7 +4,6 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Nu
 from models import User
 import re
 
-#Password Strength
 def password_strength(form, field):
     password = field.data or ""
     errors = []
@@ -21,7 +20,6 @@ def password_strength(form, field):
     if errors:
         raise ValidationError("Password must contain " + ", ".join(errors) + ".")
 
-
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -33,7 +31,7 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), password_strength])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
@@ -100,7 +98,7 @@ class ResetPasswordRequestForm(FlaskForm):
         return super(ResetPasswordRequestForm, self).validate()
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('New Password', validators=[DataRequired()])
+    password = PasswordField('New Password', validators=[DataRequired(), password_strength])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
@@ -175,4 +173,4 @@ class ConfirmTransferForm(FlaskForm):
     recipient_account = HiddenField('Recipient Account Number')
     amount = HiddenField('Amount')
     transfer_type = HiddenField('Transfer Type')
-    submit = SubmitField('Confirm Transfer') 
+    submit = SubmitField('Confirm Transfer')
