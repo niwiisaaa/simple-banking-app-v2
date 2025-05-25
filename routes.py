@@ -10,6 +10,7 @@ import os
 from functools import wraps
 import psgc_api
 import datetime
+from flask_wtf.csrf import CSRFProtect, CSRFError
 
 # Context processor to provide current year to all templates
 @app.context_processor
