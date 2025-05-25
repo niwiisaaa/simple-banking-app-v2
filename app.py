@@ -38,6 +38,9 @@ def create_app():
     csrf.init_app(app)
 
     # Database configuration
+
+    # Construct the MySQL URL from individual environment variables if DATABASE_URL is not provided
+    # Use defaults to avoid None values
     mysql_user = os.environ.get('MYSQL_USER', '')
     mysql_password = os.environ.get('MYSQL_PASSWORD', '')
     mysql_host = os.environ.get('MYSQL_HOST', '')  # Default to localhost if not set
