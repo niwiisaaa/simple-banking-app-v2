@@ -27,7 +27,8 @@
                     </div>
                     <div class="mb-3">
                         {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
+                        {{ form.password(class="form-control", id="password") }}
+                        <div id="password-strength" class="form-text"></div>
                         {% for error in form.password.errors %}
                         <div class="text-danger">{{ error }}</div>
                         {% endfor %}
@@ -50,4 +51,34 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var passwordInput = document.getElementById("password");
+    var strengthText = document.getElementById("password-strength");
+    if (passwordInput) {
+        passwordInput.addEventListener("input", function() {
+            var val = passwordInput.value;
+            var strength = 0;
+            if (val.length >= 8) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[a-z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[\W_]/.test(val)) strength++;
+            if (val.length === 0) {
+                strengthText.textContent = "";
+                strengthText.className = "form-text";
+            } else if (strength <= 2) {
+                strengthText.textContent = "Weak password";
+                strengthText.className = "form-text text-danger";
+            } else if (strength === 3 || strength === 4) {
+                strengthText.textContent = "Medium strength password";
+                strengthText.className = "form-text text-warning";
+            } else {
+                strengthText.textContent = "Strong password";
+                strengthText.className = "form-text text-success";
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
