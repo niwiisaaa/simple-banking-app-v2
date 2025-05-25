@@ -241,6 +241,12 @@ def reset_password(token):
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
 
+# CSRF error handler
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    flash('The form session has expired or is invalid. Please try again.')
+    return render_template('error.html', code=400, message='CSRF token missing or invalid.'), 400
+
 # Admin routes
 @app.route('/admin')
 @login_required
