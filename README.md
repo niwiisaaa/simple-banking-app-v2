@@ -15,6 +15,7 @@
 ## 🔗 Presentation Link 
 
 - https://drive.google.com/drive/folders/1Nnp6GYebYcruugdzz-mV4gJjWa-51IQn?usp=sharing
+- https://youtu.be/vQQjlTOnSbk?feature=shared
 
 - To view app click this link: https://nerisa.pythonanywhere.com/login?next=%2F
 
